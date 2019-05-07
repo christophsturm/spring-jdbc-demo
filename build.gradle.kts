@@ -36,6 +36,11 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:$junitPlatformVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit5Version")
+    testImplementation("org.springframework.data:spring-data-jdbc:1.0.5.RELEASE")
+    testImplementation("com.h2database:h2:1.4.198")
+    testImplementation("org.flywaydb:flyway-core:5.2.4")
+
+
 
 }
 
