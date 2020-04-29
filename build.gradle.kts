@@ -2,25 +2,19 @@ import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import info.solidsoft.gradle.pitest.PitestPluginExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val junit5Version = "5.4.2"
-val junitPlatformVersion = "1.4.2"
+val junit5Version = "5.6.2"
+val junitPlatformVersion = "1.6.2"
 
 plugins {
     java
-    kotlin("jvm") version "1.3.31"
-    id("com.github.ben-manes.versions") version "0.21.0"
-    id("info.solidsoft.pitest") version "1.4.0"
+    kotlin("jvm") version "1.3.72"
+    id("com.github.ben-manes.versions") version "0.28.0"
+    id("info.solidsoft.pitest") version "1.5.0"
 }
 
 group = "group"
 version = "1.0-SNAPSHOT"
 
-buildscript {
-    configurations.maybeCreate("pitest")
-    dependencies {
-        "pitest"("org.pitest:pitest-junit5-plugin:0.8")
-    }
-}
 
 repositories {
 //    maven { setUrl("http://dl.bintray.com/kotlin/kotlin-eap") }
@@ -29,9 +23,10 @@ repositories {
 }
 
 dependencies {
-    compile(kotlin("stdlib-jdk8"))
-    testImplementation("io.strikt:strikt-core:0.20.0")
-    testImplementation("dev.minutest:minutest:1.6.0")
+    implementation(enforcedPlatform("org.jetbrains.kotlin:kotlin-bom:1.3.72"))
+    implementation(kotlin("stdlib-jdk8"))
+    testImplementation("io.strikt:strikt-core:0.25.0")
+    testImplementation("dev.minutest:minutest:1.11.0")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:$junitPlatformVersion")
@@ -39,9 +34,7 @@ dependencies {
     testImplementation("org.springframework.data:spring-data-jdbc:1.0.5.RELEASE")
     testImplementation("com.h2database:h2:1.4.198")
     testImplementation("org.flywaydb:flyway-core:5.2.4")
-
-
-
+    "pitest"("org.pitest:pitest-junit5-plugin:0.12")
 }
 
 configure<JavaPluginConvention> {
@@ -61,16 +54,15 @@ tasks.withType<Test> {
 }
 plugins.withId("info.solidsoft.pitest") {
     configure<PitestPluginExtension> {
-        jvmArgs = listOf("-Xmx512m")
-        testPlugin = "junit5"
-        avoidCallsTo = setOf("kotlin.jvm.internal")
-        mutators = setOf("NEW_DEFAULTS")
-//        targetClasses = setOf("blueprint.*")  //by default "${project.group}.*"
-        targetTests = setOf("plueprint.**.*")
-        pitestVersion = "1.4.7"
-        threads = System.getenv("PITEST_THREADS")?.toInt() ?:
-                Runtime.getRuntime().availableProcessors()
-        outputFormats = setOf("XML", "HTML")
+        //        verbose.set(true)
+        jvmArgs.set(listOf("-Xmx512m"))
+        testPlugin.set("junit5")
+        avoidCallsTo.set(setOf("kotlin.jvm.internal", "kotlin.Result"))
+        targetClasses.set(setOf("blueprint.*"))  //by default "${project.group}.*"
+        targetTests.set(setOf("blueprint.**.*Test"))
+        //pitestVersion.set("1.4.10")
+        threads.set(System.getenv("PITEST_THREADS")?.toInt() ?: Runtime.getRuntime().availableProcessors())
+        outputFormats.set(setOf("XML", "HTML"))
     }
 }
 
