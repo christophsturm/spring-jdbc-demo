@@ -33,7 +33,7 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit5Version")
     testImplementation("org.springframework.data:spring-data-jdbc:1.0.5.RELEASE")
     testImplementation("com.h2database:h2:1.4.198")
-    testImplementation("org.flywaydb:flyway-core:5.2.4")
+    testImplementation("org.flywaydb:flyway-core:6.4.0")
     "pitest"("org.pitest:pitest-junit5-plugin:0.12")
 }
 
